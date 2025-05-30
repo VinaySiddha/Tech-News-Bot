@@ -45,7 +45,7 @@ class NewsService {
 
         try {
             // Call local Python summarizer microservice
-            const response = await axios.post('http://localhost:5005/summarize', { text: description });
+            const response = await axios.post('https://tech-news-bot-sgxd.onrender.com/summarize', { text: description });
             let summary = response.data.summary || '';
             summary = summary.replace(/\n/g, ' ').trim();
             return summary.length > 200 ? summary.substring(0, 197) + '...' : summary;
