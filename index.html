@@ -373,7 +373,7 @@
             // 3. Call your local summarizer API
             let summary = '';
             try {
-                const summarizeRes = await fetch('http://localhost:5005/api/summarize', {
+                const summarizeRes = await fetch('https://tech-news-bot-sgxd.onrender.com/api/summarize', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ text: textToSummarize })
