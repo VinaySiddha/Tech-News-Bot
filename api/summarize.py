@@ -4,8 +4,8 @@ import torch
 
 app = Flask(__name__)
 
-tokenizer = AutoTokenizer.from_pretrained("sshleifer/distilbart-cnn-12-6")
-model = AutoModelForSeq2SeqLM.from_pretrained("sshleifer/distilbart-cnn-12-6")
+tokenizer = AutoTokenizer.from_pretrained("Falconsai/text_summarization")
+model = AutoModelForSeq2SeqLM.from_pretrained("Falconsai/text_summarization")
 
 @app.route('/api/summarize', methods=['POST'])
 def summarize():
