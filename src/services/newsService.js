@@ -44,8 +44,9 @@ class NewsService {
         if (!description) return 'No description available.';
 
         try {
-            // Call local Python summarizer microservice
-            const response = await axios.post('http://localhost:5005/summarize', { text: description });
+            // Call summarizer API (use env or default to Vercel route)
+            const summarizerUrl = process.env.SUMMARIZER_URL || '/api/summarize';
+            const response = await axios.post(summarizerUrl, { text: description });
             let summary = response.data.summary || '';
             summary = summary.replace(/\n/g, ' ').trim();
             return summary.length > 200 ? summary.substring(0, 197) + '...' : summary;
