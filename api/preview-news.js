@@ -26,5 +26,8 @@ module.exports = async (req, res) => {
       success: false,
       error: error.message
     });
+
+    // Log the error for debugging purposes
+    console.error('❌ Error in /preview-news:', error);
   }
 };
