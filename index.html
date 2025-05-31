@@ -322,7 +322,7 @@
         }
 
         async function previewNews() {
-            // Show animated processing message with more sentences and icons
+            // Show animated processing message (keep your animation code)
             let dots = 0;
             let processingTexts = [
                 '🛰️ Connecting to news satellites...',
@@ -337,7 +337,6 @@
                 '⏳ Almost done, preparing your digest...'
             ];
             let step = 0;
-            // Add a fancy animated icon
             const outputContent = document.getElementById('outputContent');
             let fancyIcons = ['🛰️', '🔍', '🤖', '🧠', '✨', '🚀', '📰', '🔬', '📝', '⏳'];
             let iconStep = 0;
@@ -353,15 +352,41 @@
                 if (dots % 2 === 0) iconStep++;
             }, 400);
             document.getElementById('copyBtn').style.display = 'none';
-            const data = await makeRequest('/api/preview-news');
-            clearInterval(intervalId);
-            if (data.success) {
-                showOutput('News Preview', data.raw);
-                document.getElementById('copyBtn').style.display = 'inline-block';
-            } else {
-                showOutput('Error', data.error || 'Failed to load news');
-                document.getElementById('copyBtn').style.display = 'none';
+
+            // 1. Fetch news from NewsAPI
+            const newsApiKey = 'ccda3b6193c34f2ba9d7466e4b1132b3';
+            const newsUrl = `https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=${newsApiKey}`;
+            let newsData;
+            try {
+                const newsRes = await fetch(newsUrl);
+                newsData = await newsRes.json();
+            } catch (e) {
+                clearInterval(intervalId);
+                showOutput('Error', 'Failed to fetch news');
+                return;
             }
+
+            // 2. Prepare text for summarization
+            let articles = newsData.articles ? newsData.articles.slice(0, 5) : [];
+            let textToSummarize = articles.map(a => `Title: ${a.title}\n${a.description || ''}`).join('\n\n');
+
+            // 3. Call your local summarizer API
+            let summary = '';
+            try {
+                const summarizeRes = await fetch('http://localhost:5005/api/summarize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: textToSummarize })
+                });
+                const summarizeData = await summarizeRes.json();
+                summary = summarizeData.summary || 'No summary available.';
+            } catch (e) {
+                summary = 'Failed to summarize news.';
+            }
+
+            clearInterval(intervalId);
+            showOutput('News Preview', summary);
+            document.getElementById('copyBtn').style.display = 'inline-block';
         }
 
         function copyNews() {
