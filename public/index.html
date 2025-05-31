@@ -353,7 +353,7 @@
                 if (dots % 2 === 0) iconStep++;
             }, 400);
             document.getElementById('copyBtn').style.display = 'none';
-            const data = await makeRequest('/preview-news');
+            const data = await makeRequest('/api/preview-news');
             clearInterval(intervalId);
             if (data.success) {
                 showOutput('News Preview', data.raw);
